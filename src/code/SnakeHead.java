@@ -1,7 +1,6 @@
 package code;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,12 +13,12 @@ public class SnakeHead {
     BufferedImage head_rightImg;
     BufferedImage head_leftImg;
     int headSize;
-    private final String head_down = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_down.png";
-    private final String head_up = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_up.png";
-    private final String head_right = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_right.png";
-    private final String head_left = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_left.png";
 
     public SnakeHead(int headSize){
+        String head_down = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_down.png";
+        String head_up = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_up.png";
+        String head_right = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_right.png";
+        String head_left = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_left.png";
 
         try {
             head_downImg = ImageIO.read(new File(head_down));

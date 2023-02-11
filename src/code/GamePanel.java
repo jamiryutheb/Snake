@@ -1,14 +1,9 @@
 package code;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -26,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
     int[] x;
     int[] y;
     int appleCount = 0;
-    int decrease = 60;
+//    int decrease = 60;
 
     public GamePanel() {
 
@@ -122,12 +117,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public void speedUp() {
-        if (appleCount > 5 && decrease > 0) {
-            MILLIS -= decrease;
-            decrease -= 4;
-        }
-    }
+//    public void speedUp() {
+//        if (appleCount > 5 && decrease > 0) {
+//            MILLIS -= decrease;
+//            decrease -= 4;
+//        }
+//    }
 
     private void apple() {
         applePosX = (int) (Math.random() * FRAME_WIDTH / _UNIT) * _UNIT;
