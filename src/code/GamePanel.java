@@ -11,16 +11,14 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int FRAME_WIDTH = 800;
     public static final int FRAME_HEIGHT = 600;
     private final int _UNIT = 25;
-    //    int TICKS_PER_SECOND = 20;
-    //    final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-    //    final int MAX_FRAMESKIP = 5;
-    //    int MILLIS = 50;
+
     private static final long REFRESH_INTERVAL_MS = 50;
 
-    SnakeHead head;
+    Snake snake;
+    Food food;
     char direction = 'R';
-    int applePosX;
-    int applePosY;
+    static int APPLE_POSX;
+    static int APPLE_POSY;
     boolean running = false;
     static int body = 10;
     int[] x;
@@ -32,7 +30,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         x = new int[FRAME_WIDTH];
         y = new int[FRAME_HEIGHT];
-        head = new SnakeHead(_UNIT);
+        snake = new Snake(_UNIT + 5);
+        food = new Food();
+
         this.setBackground(Color.black);
         this.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         this.setFocusable(true);
@@ -140,7 +140,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void eatCheck() {
-        if (x[0] == applePosX && y[0] == applePosY) {
+        if (x[0] == APPLE_POSX && y[0] == APPLE_POSY) {
             grow();
             apple();
         }
@@ -158,34 +158,35 @@ public class GamePanel extends JPanel implements Runnable {
 //    }
 
     private void apple() {
-        applePosX = (int) (Math.random() * FRAME_WIDTH / _UNIT) * _UNIT;
-        applePosY = (int) (Math.random() * FRAME_HEIGHT / _UNIT) * _UNIT;
+        APPLE_POSX = (int) (Math.random() * FRAME_WIDTH / _UNIT) * _UNIT;
+        APPLE_POSY = (int) (Math.random() * FRAME_HEIGHT / _UNIT) * _UNIT;
         appleCount++;
     }
 
     public void draw(Graphics g) {
 
-        g.setColor(Color.red);
-        g.fillOval(applePosX, applePosY, _UNIT, _UNIT);
+//        g.setColor(Color.red);
+        food.draw(g, APPLE_POSX, APPLE_POSY, _UNIT);
 
 
         for (int i = 0; i < body; i++) {
             if (i == 0) {
                 if (direction == 'R') {
-                    head.drawRight(g, x[i], y[i]);
+                    snake.drawRight(g, x[i], y[i]);
                 }
                 if (direction == 'L') {
-                    head.drawLeft(g, x[i], y[i]);
+                    snake.drawLeft(g, x[i], y[i]);
                 }
                 if (direction == 'U') {
-                    head.drawUp(g, x[i], y[i]);
+                    snake.drawUp(g, x[i], y[i]);
                 }
                 if (direction == 'D') {
-                    head.drawDown(g, x[i], y[i]);
+                    snake.drawDown(g, x[i], y[i]);
                 }
-            } else {
-                g.setColor(Color.WHITE);
-                g.fillRect(x[i], y[i], _UNIT, _UNIT);
+            } else if(direction == 'R' || direction == 'L')  {
+                snake.drawBody('H', g, x[i], y[i]);
+            }else{
+                snake.drawBody('V', g, x[i], y[i]);
             }
         }
 
