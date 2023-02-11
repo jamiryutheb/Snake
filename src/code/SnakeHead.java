@@ -15,10 +15,10 @@ public class SnakeHead {
     int headSize;
 
     public SnakeHead(int headSize){
-        String head_down = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_down.png";
-        String head_up = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_up.png";
-        String head_right = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_right.png";
-        String head_left = "C:\\Users\\enesg\\IdeaProjects\\Snake\\src\\img_src\\head_left.png";
+        String head_down = "src\\img_src\\head_down.png";
+        String head_up = "src\\img_src\\head_up.png";
+        String head_right = "src\\img_src\\head_right.png";
+        String head_left = "src\\img_src\\head_left.png";
 
         try {
             head_downImg = ImageIO.read(new File(head_down));
