@@ -11,7 +11,12 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int FRAME_WIDTH = 800;
     public static final int FRAME_HEIGHT = 600;
     private final int _UNIT = 25;
-    private int MILLIS = 50;
+    //    int TICKS_PER_SECOND = 20;
+    //    final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    //    final int MAX_FRAMESKIP = 5;
+    //    int MILLIS = 50;
+    private static final long REFRESH_INTERVAL_MS = 50;
+
     SnakeHead head;
     char direction = 'R';
     int applePosX;
@@ -21,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
     int[] x;
     int[] y;
     int appleCount = 0;
-//    int decrease = 60;
+    private final Object redrawLock = new Object();
 
     public GamePanel() {
 
@@ -45,18 +50,48 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
+
         while (running) {
-            move();
-            eatCheck();
-            crashCheck();
-            repaint();
+            long durationMs = redraw();
             try {
-                Thread.sleep(MILLIS);
+                Thread.sleep(Math.max(0, REFRESH_INTERVAL_MS - durationMs));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    private long redraw() {
+
+        long t = System.currentTimeMillis();
+
+        // perform changes to model
+        move();
+        eatCheck();
+        crashCheck();
+
+        repaint();
+        waitForPaint();
+
+        // return time taken to do redraw in ms
+        return System.currentTimeMillis() - t;
+    }
+
+    private void waitForPaint() {
+        try {
+            synchronized (redrawLock) {
+                redrawLock.wait();
+            }
+        } catch (InterruptedException ignored) {
+        }
+    }
+
+    private void resume() {
+        synchronized (redrawLock) {
+            redrawLock.notify();
+        }
+    }
+
 
     private void crashCheck() {
         int head_X = x[0];
@@ -66,16 +101,16 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 1; i < body; i++) {
             if (head_X == x[i] && head_Y == y[i]) {
                 running = false;
-                break;
+                System.exit(0);
             }
         }
-
 
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        resume();
         draw(g);
     }
 
@@ -113,8 +148,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void grow() {
         body++;
-//        speedUp();
-
     }
 
 //    public void speedUp() {
@@ -136,15 +169,21 @@ public class GamePanel extends JPanel implements Runnable {
         g.fillOval(applePosX, applePosY, _UNIT, _UNIT);
 
 
-
         for (int i = 0; i < body; i++) {
             if (i == 0) {
-                if (direction == 'R'){head.drawRight(g,x[i],y[i]);}
-                if (direction == 'L'){head.drawLeft(g,x[i],y[i]);}
-                if (direction == 'U'){head.drawUp(g,x[i],y[i]);}
-                if (direction == 'D'){head.drawDown(g,x[i],y[i]);}
-            }
-            else {
+                if (direction == 'R') {
+                    head.drawRight(g, x[i], y[i]);
+                }
+                if (direction == 'L') {
+                    head.drawLeft(g, x[i], y[i]);
+                }
+                if (direction == 'U') {
+                    head.drawUp(g, x[i], y[i]);
+                }
+                if (direction == 'D') {
+                    head.drawDown(g, x[i], y[i]);
+                }
+            } else {
                 g.setColor(Color.WHITE);
                 g.fillRect(x[i], y[i], _UNIT, _UNIT);
             }
